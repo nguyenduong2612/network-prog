@@ -8,28 +8,28 @@
 #include <arpa/inet.h>
 
 void resolve_name(char input[]) {
-  struct hostent *hen;
+  struct hostent *host;
   int i = 0;
 
   printf("Hostname: %s\n", input);
-  hen = gethostbyname(input);
+  host = gethostbyname(input);
 
-  if (hen == NULL) {
+  if (host == NULL) {
     printf("Not found information\n");
     return;
   }
 
-  printf("Offcial IP: %s \n", inet_ntoa(*((struct in_addr *)hen->h_addr)));
+  printf("Offcial IP: %s \n", inet_ntoa(*((struct in_addr *)host->h_addr)));
 
   char **pAlias;
 
-  for (pAlias = hen->h_aliases; *pAlias != NULL; pAlias++) {
-    printf("Alternate IP #%d: %s\n", ++i, inet_ntoa(*((struct in_addr *)pAlias)));
+  for (pAlias = host->h_aliases; *pAlias != NULL; pAlias++) {
+    printf("Alias IP #%d: %s\n", ++i, inet_ntoa(*((struct in_addr *)pAlias)));
   }
 }
 
 void resolve_ip_addr(char input[]) {
-  struct hostent *hen;
+  struct hostent *host;
   struct in_addr addr;
   int i = 0;
 
@@ -39,19 +39,19 @@ void resolve_ip_addr(char input[]) {
     printf("Not found information\n");
     return;
   } else
-    hen = gethostbyaddr((char *) &addr, 4, AF_INET);
+    host = gethostbyaddr((char *) &addr, 4, AF_INET);
 
-  if (hen == NULL) {
+  if (host == NULL) {
     printf("Not found information\n");
     return;
   }
 
-  printf("Offcial name: %s \n", hen->h_name);
+  printf("Offcial name: %s \n", host->h_name);
 
   char **pAlias;
 
-  for (pAlias = hen->h_aliases; *pAlias != NULL; pAlias++) {
-    printf("Alternate name #%d: %s\n", ++i, *pAlias);
+  for (pAlias = host->h_aliases; *pAlias != NULL; pAlias++) {
+    printf("Alias name #%d: %s\n", ++i, *pAlias);
   }
 }
 
@@ -71,8 +71,8 @@ int main(int argc, char const *argv[]) {
     resolve_ip_addr(input);       /* input is an ip address */
   }
 
-  // while (hen->h_aliases[i] != 0) {
-  //   addr.s_addr = *(u_long *) hen->h_aliases[i++];
+  // while (host->h_aliases[i] != 0) {
+  //   addr.s_addr = *(u_long *) host->h_aliases[i++];
   //   printf("\tIPv4 Address #%d: %s\n", i, inet_ntoa(addr));
   // }
   return 0;
