@@ -12,13 +12,16 @@
 int checkIpAddress(const char *ipAddress) {
     struct sockaddr_in sa;
     int result = inet_pton(AF_INET, ipAddress, &(sa.sin_addr));
-    if (result != 0)
-        return 1;
-    else
-        return 0;
+    if (result != 0) return 1;
+    else return 0;
 }
 
 int main(int argc, char const *argv[]) {
+
+    int client_sock;
+    char buffer[BUFF_SIZE];
+    struct sockaddr_in server_addr;
+    int bytes_sent, bytes_received, sin_size;
 
     if (argc != 3) {
         printf("Syntax is incorrect!\n");
@@ -29,11 +32,6 @@ int main(int argc, char const *argv[]) {
         printf("Not a valid ip address\n");
         return 0;
     }
-
-    int client_sock;
-    char buffer[BUFF_SIZE];
-    struct sockaddr_in server_addr;
-    int bytes_sent, bytes_received, sin_size;
 
     //Step 1: Construct a UDP socket
     if ((client_sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {

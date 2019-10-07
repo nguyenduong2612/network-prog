@@ -26,18 +26,17 @@ int checkIpAddress(char ipAddress[]) {
 
 char *fromIpToAddress(char* ip) {
     char *message = "Official name: ";
-    char firstloglocation[BUFF_SIZE];
+    char official[BUFF_SIZE];
     inet_pton(AF_INET, ip, &ipv4addr);
     if ((host = gethostbyaddr(&ipv4addr, sizeof ipv4addr, AF_INET)) == NULL) {
         return "Not found information\n";
-    }
-    else {
-        strcpy(firstloglocation, message);
-        message = strcat(firstloglocation, host->h_name);
+    } else {
+        strcpy(official, message);
+        message = strcat(official, host->h_name);
         strcat(message, "\nAlias name:\n");
         for (i = 0; host->h_aliases[i] != NULL; i++) {
-            strcpy(firstloglocation, message);
-            message = strcat(firstloglocation, host->h_aliases[i]);
+            strcpy(official, message);
+            message = strcat(official, host->h_aliases[i]);
             strcat(message, "\n");
         }
         return message;
@@ -46,23 +45,22 @@ char *fromIpToAddress(char* ip) {
 
 char *fromAddressToIp(char address[]) {
     char *message = "Official IP: \n";
-    char firstloglocation[BUFF_SIZE];
-    char secondloglocation[BUFF_SIZE];
+    char official[BUFF_SIZE];
+    char alias[BUFF_SIZE];
     if ((host = gethostbyname(address)) == NULL) {
         herror("Error");
         return "Error\n";
-    }
-    else {
+    } else {
         for (i = 0; host->h_addr_list[i] != NULL; i++) {
-            strcpy(firstloglocation, message);
-            message = strcat(firstloglocation, inet_ntoa(*(struct in_addr *)host->h_addr_list[i]));
+            strcpy(official, message);
+            message = strcat(official, inet_ntoa(*(struct in_addr *)host->h_addr_list[i]));
             strcat(message, "\n");
         }
         strcat(message, "Alias IP address: \n");
 
         for (i = 0; host->h_aliases[i] != NULL; i++) {
-            strcpy(secondloglocation, message);
-            message = strcat(secondloglocation, inet_ntoa(*(struct in_addr *)host->h_aliases[i]));
+            strcpy(alias, message);
+            message = strcat(alias, inet_ntoa(*(struct in_addr *)host->h_aliases[i]));
             strcat(message, "\n");
         }
         return message;
@@ -71,15 +69,16 @@ char *fromAddressToIp(char address[]) {
 
 int main(int argc, char const *argv[]) {
 
-    if (argc != 2) {
-        printf("Syntax is incorrect!\n");
-        return 0;
-    }
     int server_sock;
     char buffer[BUFF_SIZE];
     int bytes_sent, bytes_received;
     struct sockaddr_in server, client;
     int sin_size;
+
+    if (argc != 2) {
+        printf("Syntax is incorrect!\n");
+        return 0;
+    }
 
     //Step 1: Construct a UDP socket
     if ((server_sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {

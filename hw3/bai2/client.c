@@ -19,6 +19,12 @@ int checkIpAddress(const char *ipAddress) {
 }
 
 int main(int argc, char const *argv[]) {
+
+    int client_sock;
+    char buffer[BUFF_SIZE];
+    struct sockaddr_in server_addr;
+    int bytes_sent, bytes_received, sin_size;
+
     if (argc != 3) {
         printf("Syntax is incorrect!\n");
         return 0;
@@ -28,11 +34,6 @@ int main(int argc, char const *argv[]) {
         printf("Not a valid ip address\n");
         return 0;
     }
-
-    int client_sock;
-    char buffer[BUFF_SIZE];
-    struct sockaddr_in server_addr;
-    int bytes_sent, bytes_received, sin_size;
 
     //Step 1: Construct a UDP socket
     if ((client_sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -51,8 +52,7 @@ int main(int argc, char const *argv[]) {
         printf("\nSend to server: ");
         memset(buffer, '\0', (strlen(buffer) + 1));
         fgets(buffer, BUFF_SIZE, stdin);
-        // if input string is empty, exit;
-        if (strcmp(buffer, "\n") == 0) {
+        if (strcmp(buffer, "\n") == 0) { // if input string is empty then exit;
             printf("Exiting\n");
             close(client_sock);
             return 0;

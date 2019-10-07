@@ -9,7 +9,7 @@
 
 #define BUFF_SIZE 1024
 
-char *resultMessage(char buffer[], int len) {
+char *resolve_string(char buffer[], int len) {
     int n = 0, m = 0, isError = 0;
     char number[BUFF_SIZE];
     char alpha[BUFF_SIZE];
@@ -38,15 +38,16 @@ char *resultMessage(char buffer[], int len) {
 
 int main(int argc, char const *argv[]) {
 
-    if (argc != 2) {
-        printf("Syntax is incorrect!\n");
-        return 0;
-    }
     int server_sock;
     char buffer[BUFF_SIZE];
     int bytes_sent, bytes_received;
     struct sockaddr_in server, client;
     int sin_size;
+
+    if (argc != 2) {
+        printf("Syntax is incorrect!\n");
+        return 0;
+    }
 
    //Step 1: Construct a UDP socket
     if ((server_sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -82,8 +83,8 @@ int main(int argc, char const *argv[]) {
         }
         buffer[bytes_received] = '\0';
         printf("\nRecieve from client : %s", buffer);
-        result_len = strlen(resultMessage(buffer, strlen(buffer)));
-        bytes_sent = sendto(server_sock, (const char *)resultMessage(buffer, strlen(buffer)), result_len, MSG_CONFIRM, (const struct sockaddr *)&client, sin_size);
+        result_len = strlen(resolve_string(buffer, strlen(buffer)));
+        bytes_sent = sendto(server_sock, (const char *)resolve_string(buffer, strlen(buffer)), result_len, MSG_CONFIRM, (const struct sockaddr *)&client, sin_size);
         if (bytes_sent < 0) {
             perror("Error: ");
             close(server_sock);
